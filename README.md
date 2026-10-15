@@ -1,1 +1,3 @@
-# BSIT-3C---DJANGO---Vallacar-Waybill-System
+YUDE, AIZZY B.
+TANAYA, KENNA ROSE DEE P.
+SELFO, MYHZEL G.
