@@ -1,0 +1,142 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | Vallacar{% endblock %}
+
+{% block content %}
+
+<div class="heading">
+    <div>
+        <span class="eyebrow">OVERVIEW</span>
+        <h1>Welcome back, {{ request.user.username }}! 👋</h1>
+        <p>Here's what's happening in your transport operations today.</p>
+    </div>
+
+    <a href="{% url 'record_create' 'waybills' %}" class="primary-button">
+        <i class="fa-solid fa-plus"></i> New Shipment
+    </a>
+</div>
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-label">Total Shipments <i class="fa-solid fa-box blue"></i></div>
+        <h2>{{ total_shipments }}</h2>
+        <small>All recorded shipments</small>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">In Transit <i class="fa-solid fa-truck-fast purple"></i></div>
+        <h2>{{ transit_shipments }}</h2>
+        <small>Currently on the way</small>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Delivered <i class="fa-solid fa-circle-check green"></i></div>
+        <h2>{{ delivered_shipments }}</h2>
+        <small>Successfully delivered</small>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Pending <i class="fa-solid fa-clock orange"></i></div>
+        <h2>{{ pending_shipments }}</h2>
+        <small>Awaiting dispatch</small>
+    </div>
+
+</div>
+
+<div class="dashboard-grid">
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <h3>Truck & Route Map</h3>
+                <small>Illustrative transport locations</small>
+            </div>
+            <a href="{% url 'record_list' 'routes' %}">View Routes →</a>
+        </div>
+
+        <div id="vallacar-map"></div>
+    </section>
+
+    <section class="panel">
+        <h3>Shipment Overview</h3>
+
+        <div class="donut-layout">
+            <div class="donut">
+                <canvas id="shipmentChart"></canvas>
+                <div class="donut-center">
+                    <b>{{ total_shipments }}</b>
+                    <small>Total</small>
+                </div>
+            </div>
+
+            <div class="legend">
+                <p>🟢 Delivered <b>{{ delivered_shipments }}</b></p>
+                <p>🔵 In Transit <b>{{ transit_shipments }}</b></p>
+                <p>🟠 Pending <b>{{ pending_shipments }}</b></p>
+                <p>🔴 Cancelled <b>{{ cancelled_shipments }}</b></p>
+            </div>
+        </div>
+
+        <hr>
+
+        <h3>Quick Information</h3>
+        <div class="info-row">Registered Buses <b>{{ total_buses }}</b></div>
+        <div class="info-row">Registered Routes <b>{{ total_routes }}</b></div>
+        <div class="info-row">Registered Drivers <b>{{ total_drivers }}</b></div>
+        <div class="info-row">Total Customers <b>{{ total_customers }}</b></div>
+        <div class="info-row">Paid Revenue <b>₱{{ total_revenue|floatformat:2 }}</b></div>
+    </section>
+
+</div>
+
+<section class="panel recent-panel">
+
+    <div class="panel-heading">
+        <h3>Recent Shipments</h3>
+        <a href="{% url 'record_list' 'waybills' %}">View All →</a>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>WAYBILL NUMBER</th>
+                    <th>SENDER</th>
+                    <th>RECEIVER</th>
+                    <th>DESTINATION</th>
+                    <th>WEIGHT</th>
+                    <th>STATUS</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in recent_shipments %}
+                <tr>
+                    <td><b>{{ item.waybill_number }}</b></td>
+                    <td>{{ item.sender }}</td>
+                    <td>{{ item.receiver_name }}</td>
+                    <td>{{ item.destination }}</td>
+                    <td>{{ item.weight }} kg</td>
+                    <td><span class="status">{{ item.status }}</span></td>
+                    <td>
+                        <a href="{% url 'record_edit' 'waybills' item.pk %}">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty">No shipment records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</section>
+
+{{ chart_data|json_script:"chart-data" }}
+
+{% endblock %}

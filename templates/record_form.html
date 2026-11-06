@@ -1,0 +1,48 @@
+
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} | Vallacar{% endblock %}
+
+{% block content %}
+
+<div class="heading">
+    <div>
+        <span class="eyebrow">RECORD MANAGEMENT</span>
+        <h1>{{ title }}</h1>
+        <p>Complete the information below.</p>
+    </div>
+</div>
+
+<section class="panel form-panel">
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+
+            {% if field.help_text %}
+                <small>{{ field.help_text }}</small>
+            {% endif %}
+
+            {% for error in field.errors %}
+                <small class="field-error">{{ error }}</small>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+            <div class="alert error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="form-buttons">
+            <button type="submit" class="primary-button">Save Record</button>
+            <a href="{% url 'record_list' module %}" class="cancel-button">Cancel</a>
+        </div>
+    </form>
+
+</section>
+
+{% endblock %}

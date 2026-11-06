@@ -1,0 +1,118 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Vallacar Logistics{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-truck-fast"></i></div>
+        <div><b>VALLACAR</b><small>WAYBILL MANAGEMENT</small></div>
+    </div>
+
+    <p class="menu-label">MAIN MENU</p>
+
+    <a href="{% url 'dashboard' %}" class="nav-link">
+        <i class="fa-solid fa-chart-pie"></i> Dashboard
+    </a>
+
+    <a href="{% url 'record_list' 'waybills' %}" class="nav-link">
+        <i class="fa-solid fa-box"></i> Waybills & Shipments
+    </a>
+
+    <a href="{% url 'record_list' 'buses' %}" class="nav-link">
+        <i class="fa-solid fa-bus"></i> Buses
+    </a>
+
+    <a href="{% url 'record_list' 'drivers' %}" class="nav-link">
+        <i class="fa-solid fa-id-card"></i> Drivers
+    </a>
+
+    <a href="{% url 'record_list' 'routes' %}" class="nav-link">
+        <i class="fa-solid fa-route"></i> Routes
+    </a>
+
+    <a href="{% url 'record_list' 'trips' %}" class="nav-link">
+        <i class="fa-solid fa-calendar"></i> Bus Trips
+    </a>
+
+    <p class="menu-label">MANAGEMENT</p>
+
+    <a href="{% url 'record_list' 'customers' %}" class="nav-link">
+        <i class="fa-solid fa-users"></i> Customers
+    </a>
+
+    <a href="{% url 'record_list' 'payments' %}" class="nav-link">
+        <i class="fa-solid fa-wallet"></i> Payments
+    </a>
+
+    <a href="{% url 'reports' %}" class="nav-link">
+        <i class="fa-solid fa-chart-column"></i> Reports
+    </a>
+
+    <a href="/admin/" class="nav-link">
+        <i class="fa-solid fa-gear"></i> Administration
+    </a>
+
+    <div class="sidebar-bottom">
+        <div class="user-profile">
+            <div class="avatar">{{ request.user.username|first|upper }}</div>
+            <div>
+                <b>{{ request.user.username }}</b>
+                <small>Administrator</small>
+            </div>
+        </div>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="logout-btn" type="submit">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign out
+            </button>
+        </form>
+    </div>
+</aside>
+
+<div class="main">
+
+    <header class="topbar">
+        <div class="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" placeholder="Search shipments..." id="globalSearch">
+        </div>
+
+        <div class="top-user">
+            <i class="fa-regular fa-bell"></i>
+            <span>{{ request.user.username }}</span>
+        </div>
+    </header>
+
+    <main class="content">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>© 2026 Vallacar Waybill Management System</footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>
