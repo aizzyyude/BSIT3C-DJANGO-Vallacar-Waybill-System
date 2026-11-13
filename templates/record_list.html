@@ -1,5 +1,6 @@
 
 {% extends 'base.html' %}
+{% load vallacar_tag %}
 
 {% block title %}{{ title }} | Vallacar{% endblock %}
 
@@ -23,7 +24,7 @@
 
     <form method="get" class="filter-form">
         <input type="search" name="q" value="{{ query }}"
-               placeholder="Search records...">
+               placeholder="Search {{ title|lower }}...">
         <button type="submit" class="primary-button">Search</button>
     </form>
 
@@ -44,7 +45,7 @@
                 {% for record in records %}
                 <tr>
                     {% for column in columns %}
-                    <td>{{ record|default_if_none:"-" }}</td>
+                    <td>{{ record|get_attr:column }}</td>
                     {% endfor %}
 
                     {% if not is_report %}
